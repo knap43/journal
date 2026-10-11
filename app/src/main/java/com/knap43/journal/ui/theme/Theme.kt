@@ -1,10 +1,16 @@
 package com.knap43.journal.ui.theme
 
+import android.os.Build
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -53,7 +59,15 @@ private val Type = Base.copy(
 
 val ProseStyle = TextStyle(fontFamily = ProseFamily, fontSize = 18.sp, lineHeight = 29.sp)
 
+/** The amber scheme, or the wallpaper's (always dark) when "Use system colors" is on. */
+@Composable
+private fun colorScheme(amber: ColorScheme): ColorScheme {
+    val context = LocalContext.current
+    val systemColors by Appearance.systemColors(context).collectAsState()
+    return if (systemColors && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) dynamicDarkColorScheme(context) else amber
+}
+
 @Composable
 fun JournalTheme(content: @Composable () -> Unit) {
-    MaterialTheme(colorScheme = Colors, typography = Type, content = content)
+    MaterialTheme(colorScheme = colorScheme(Colors), typography = Type, content = content)
 }

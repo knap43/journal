@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -73,13 +74,14 @@ import coil3.compose.AsyncImage
 import com.knap43.journal.data.EntryWithAttachments
 import com.knap43.journal.data.Exporter
 import com.knap43.journal.data.JournalRepository
+import com.knap43.journal.ui.theme.AppearanceDialog
 import com.knap43.journal.ui.theme.ProseFamily
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle as DateTextStyle
 import java.util.Locale
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -113,6 +115,9 @@ fun TimelineScreen(
 
     BackHandler(enabled = searching) { searching = false; query = "" }
 
+    var appearanceOpen by remember { mutableStateOf(false) }
+    if (appearanceOpen) AppearanceDialog(onDismiss = { appearanceOpen = false })
+
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
@@ -145,6 +150,11 @@ fun TimelineScreen(
                                         menuOpen = false
                                         export.launch("journal-${LocalDate.now()}.zip")
                                     },
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Appearance") },
+                                    leadingIcon = { Icon(Icons.Outlined.Palette, null) },
+                                    onClick = { menuOpen = false; appearanceOpen = true },
                                 )
                             }
                         }
